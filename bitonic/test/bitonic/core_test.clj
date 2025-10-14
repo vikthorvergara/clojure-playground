@@ -1,8 +1,7 @@
 (ns bitonic.core-test
   (:require [clojure.test :refer :all]
             [bitonic.core :refer :all]
-            [bitonic.db :as db]
-            [clojure.java.jdbc :as jdbc]))
+            [bitonic.db :as db]))
 
 ;; Initialize DB once before running tests
 (use-fixtures :once
