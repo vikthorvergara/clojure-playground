@@ -1,7 +1,8 @@
 (ns redis-benchmark
   (:require [criterium.core :as crit]
             [taoensso.carmine :as car])
-  (:import [redis.clients.jedis Jedis JedisPool JedisPoolConfig]))
+  (:import [redis.clients.jedis Jedis JedisPool JedisPoolConfig]
+           [redis.clients.jedis.params XAddParams]))
 
 ;; ============================================================================
 ;; Configuration
@@ -79,13 +80,13 @@
   (with-open [jedis (.getResource @jedis-pool)]
     (.xadd jedis
            test-stream
-           nil  ;; auto-generate ID
            (doto (java.util.HashMap.)
              (.put "test_name" "bench-test")
              (.put "status" "passed")
              (.put "expected" "[1 2 3]")
              (.put "actual" "[1 2 3]")
-             (.put "ts" (str (System/currentTimeMillis)))))))
+             (.put "ts" (str (System/currentTimeMillis))))
+           (XAddParams/xAddParams))))
 
 (defn jedis-batch-write
   "Batch XADD using Jedis with manual pipelining"
@@ -95,13 +96,13 @@
       (dotimes [i n]
         (.xadd pipeline
                test-stream
-               nil
                (doto (java.util.HashMap.)
                  (.put "test_name" (str "bench-test-" i))
                  (.put "status" "passed")
                  (.put "expected" "[1 2 3]")
                  (.put "actual" "[1 2 3]")
-                 (.put "ts" (str (System/currentTimeMillis))))))
+                 (.put "ts" (str (System/currentTimeMillis))))
+               (XAddParams/xAddParams)))
       (.sync pipeline))))
 
 (defn jedis-single-read
