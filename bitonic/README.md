@@ -155,6 +155,41 @@ Then run tests:
 (test/run-tests 'bitonic.core-test)
 ```
 
+## Running Benchmarks
+
+Performance benchmarks using Criterium are available to compare Redis client implementations and analyze bitonic algorithm performance.
+
+### Quick Start
+
+Ensure Redis is running:
+
+```bash
+docker-compose up -d
+```
+
+Run benchmarks:
+
+```bash
+# All benchmarks
+clj -M:benchmark -m run
+
+# Redis client comparison (Carmine vs Jedis)
+clj -M:benchmark -m run --redis
+
+# Bitonic algorithm performance
+clj -M:benchmark -m run --bitonic
+
+# Quick mode (faster, less detailed)
+clj -M:benchmark -m run --bitonic --quick
+```
+
+### What's Benchmarked
+
+- **Redis clients**: Carmine (high-level Clojure) vs Jedis (low-level Java) for connection overhead, single/batch writes, and reads
+- **Bitonic algorithm**: Performance across different array sizes, edge cases, alternative implementations, and memory usage
+
+See [BENCHMARKS.md](bitonic/BENCHMARKS.md) for detailed documentation on interpreting results and customizing benchmarks.
+
 ## Stopping the Project
 
 ### Stop the Server
@@ -191,11 +226,15 @@ bitonic/
 │       ├── core.clj      # Core application logic
 │       ├── db.clj        # Redis database operations
 │       └── server.clj    # HTTP server setup
-└── test/
-    └── bitonic/
-        ├── api_test_temp.clj
-        ├── core_test.clj
-        └── db_test.clj
+├── test/
+│   └── bitonic/
+│       ├── api_test_temp.clj
+│       ├── core_test.clj
+│       └── db_test.clj
+└── benchmarks/
+    ├── run.clj           # Benchmark runner
+    ├── redis_benchmark.clj    # Redis client comparison
+    └── bitonic_benchmark.clj  # Algorithm performance
 ```
 
 ## Troubleshooting
